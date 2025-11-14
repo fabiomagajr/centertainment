@@ -18,7 +18,7 @@ import os
 DEFAULT_COUNTRIES = [
     {"name": "United States", "code": "US"},
     {"name": "Canada", "code": "CA"},
-    {"name": "United Kingdom", "code": "GB"},
+    {"name": "United Kingdom", "code": "UK"},
     {"name": "France", "code": "FR"},
     {"name": "Germany", "code": "DE"},
     {"name": "Spain", "code": "ES"},
@@ -32,6 +32,7 @@ DEFAULT_COUNTRIES = [
     {"name": "Russia", "code": "RU"},
     {"name": "South Korea", "code": "KR"},
     {"name": "Netherlands", "code": "NL"},
+    {"name": "New Zealand", "code": "NZ"},
     {"name": "Sweden", "code": "SE"},
     {"name": "Norway", "code": "NO"},
     {"name": "Denmark", "code": "DK"},
