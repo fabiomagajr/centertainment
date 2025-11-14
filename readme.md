@@ -1,4 +1,4 @@
-```
+
 # 🎬 API de Filmes (Movie API)
 
 Uma API RESTful desenvolvida com Django e Django REST Framework para catalogar filmes, diretores, atores e gêneros.
@@ -115,4 +115,3 @@ O prefixo base para todos os endpoints é `/api/movies/`.
 ` `/api/movies/countries/<id>/` `GET, PUT, PATCH, DELETE` Detalha, atualiza ou deleta um país. `
 ` `/api/movies/movie-actors/` `GET, POST` Lista ou associa atores a filmes. `
 ` `/api/movies/movie-actors/<id>/` `GET, PUT, PATCH, DELETE` Detalha, atualiza ou deleta uma associação. `
-```
