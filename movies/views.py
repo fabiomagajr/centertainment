@@ -67,9 +67,6 @@ def movie_detail_view(request, pk):
     }
     return render(request, 'movie_detail.html', context)
 
-from django.shortcuts import render
-from django.db.models import Q
-from .models import Movie
 
 def search_movie_view(request):
     query = request.GET.get('q', '')
@@ -82,7 +79,7 @@ def search_movie_view(request):
         results = Movie.objects.filter(
             Q(title__icontains=query) |
             Q(director__name__icontains=query) |
-            Q(movieactor__actor__name__icontains=query) |  # ← CORREÇÃO AQUI
+            Q(movieactor__actor__name__icontains=query) |  
             Q(genres__name__icontains=query)
         ).distinct()
         
