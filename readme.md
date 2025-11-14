@@ -101,17 +101,17 @@ Siga os passos abaixo para configurar o ambiente de desenvolvimento local.
 
 O prefixo base para todos os endpoints é `/api/movies/`.
 
-` Endpoint ` Método HTTP ` Descrição `
-` :--- ` :--- ` :--- `
-` `/api/movies/movies/` `GET, POST` Lista ou cria novos filmes. `
-` `/api/movies/movies/<id>/` `GET, PUT, PATCH, DELETE` Detalha, atualiza ou deleta um filme. `
-` `/api/movies/directors/` `GET, POST` Lista ou cria novos diretores. `
-` `/api/movies/directors/<id>/` `GET, PUT, PATCH, DELETE` Detalha, atualiza ou deleta um diretor. `
-` `/api/movies/actors/` `GET, POST` Lista ou cria novos atores. `
-` `/api/movies/actors/<id>/` `GET, PUT, PATCH, DELETE` Detalha, atualiza ou deleta um ator. `
-` `/api/movies/genres/` `GET, POST` Lista ou cria novos gêneros. `
-` `/api/movies/genres/<id>/` `GET, PUT, PATCH, DELETE` Detalha, atualiza ou deleta um gênero. `
-` `/api/movies/countries/` `GET, POST` Lista ou cria novos países. `
-` `/api/movies/countries/<id>/` `GET, PUT, PATCH, DELETE` Detalha, atualiza ou deleta um país. `
-` `/api/movies/movie-actors/` `GET, POST` Lista ou associa atores a filmes. `
-` `/api/movies/movie-actors/<id>/` `GET, PUT, PATCH, DELETE` Detalha, atualiza ou deleta uma associação. `
+| Endpoint | Método HTTP | Descrição `
+| :--- | :--- ` :--- |
+| `/api/movies/movies/` `GET, POST` Lista ou cria novos filmes. `
+| `/api/movies/movies/<id>/` `GET, PUT, PATCH, DELETE` Detalha, atualiza ou deleta um filme. `
+| `/api/movies/directors/` `GET, POST` Lista ou cria novos diretores. `
+| `/api/movies/directors/<id>/` `GET, PUT, PATCH, DELETE` Detalha, atualiza ou deleta um diretor. `
+| `/api/movies/actors/` `GET, POST` Lista ou cria novos atores. `
+| `/api/movies/actors/<id>/` `GET, PUT, PATCH, DELETE` Detalha, atualiza ou deleta um ator. `
+| `/api/movies/genres/` `GET, POST` Lista ou cria novos gêneros. `
+| `/api/movies/genres/<id>/` `GET, PUT, PATCH, DELETE` Detalha, atualiza ou deleta um gênero. `
+| `/api/movies/countries/` `GET, POST` Lista ou cria novos países. `
+| `/api/movies/countries/<id>/` `GET, PUT, PATCH, DELETE` Detalha, atualiza ou deleta um país. `
+| `/api/movies/movie-actors/` `GET, POST` Lista ou associa atores a filmes. `
+| `/api/movies/movie-actors/<id>/` `GET, PUT, PATCH, DELETE` Detalha, atualiza ou deleta uma associação. `
