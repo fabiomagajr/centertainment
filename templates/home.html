@@ -1,0 +1,336 @@
+{% extends 'base.html' %}
+
+{% block title %}Centertainment - Descubra o Mundo do Cinema{% endblock title %}
+
+{% block content %}
+<style>
+    .hero-section {
+        position: relative;
+        padding: 4rem 0;
+        margin-bottom: 3rem;
+        overflow: hidden;
+        border-radius: 20px;
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(5deg); }
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        padding: 2rem;
+    }
+    
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #8b5cf6, #ec4899, #fbbf24);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.3rem;
+        color: var(--text-secondary);
+        max-width: 700px;
+        margin-bottom: 2rem;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 60%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        border-radius: 2px;
+    }
+    
+    .api-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+    
+    .api-card {
+        background: rgba(20, 24, 33, 0.8);
+        border: 1px solid rgba(139, 92, 246, 0.2);
+        border-radius: 16px;
+        padding: 2rem;
+        text-decoration: none;
+        color: var(--text-primary);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+    }
+    
+    .api-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+    }
+    
+    .api-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        border-color: rgba(139, 92, 246, 0.6);
+        box-shadow: 
+            0 20px 40px rgba(139, 92, 246, 0.3),
+            0 0 80px rgba(236, 72, 153, 0.2);
+    }
+    
+    .api-card:hover::before {
+        opacity: 1;
+    }
+    
+    .api-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .api-card-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .api-card-description {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        position: relative;
+        z-index: 1;
+        margin-bottom: 1rem;
+    }
+    
+    .api-badge {
+        display: inline-block;
+        padding: 0.3rem 0.8rem;
+        background: rgba(139, 92, 246, 0.2);
+        border: 1px solid rgba(139, 92, 246, 0.4);
+        border-radius: 20px;
+        font-size: 0.85rem;
+        color: var(--gradient-start);
+        position: relative;
+        z-index: 1;
+    }
+    
+    .stats-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin: 3rem 0;
+    }
+    
+    .stat-card {
+        background: rgba(20, 24, 33, 0.6);
+        border: 1px solid rgba(139, 92, 246, 0.2);
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        backdrop-filter: blur(10px);
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .stat-label {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+    
+    .cta-section {
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(236, 72, 153, 0.15) 100%);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        border-radius: 16px;
+        padding: 3rem;
+        text-align: center;
+        margin-top: 3rem;
+    }
+    
+    .cta-button {
+        display: inline-block;
+        padding: 1rem 2.5rem;
+        background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+        color: white;
+        text-decoration: none;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+    }
+    
+    .cta-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(139, 92, 246, 0.6);
+        color: white;
+    }
+    
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .api-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">
+            Bem-vindo à Centertainment
+        </h1>
+        <p class="hero-subtitle">
+            Explore um universo cinematográfico completo com acesso a informações detalhadas sobre filmes, diretores, atores e gêneros através da nossa poderosa API RESTful.
+        </p>
+        <div class="d-flex gap-3 flex-wrap">
+            <span class="api-badge">
+                <i class="fas fa-database"></i> API RESTful
+            </span>
+            <span class="api-badge">
+                <i class="fas fa-bolt"></i> Rápido & Confiável
+            </span>
+            <span class="api-badge">
+                <i class="fas fa-lock"></i> Seguro
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="stats-section">
+    <div class="stat-card">
+        <div class="stat-number">{{ total_movies }}</div>
+        <div class="stat-label">Filmes</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ total_directors }}</div>
+        <div class="stat-label">Diretores</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ total_actors }}</div>
+        <div class="stat-label">Atores & Atrizes</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ total_genres }}</div>
+        <div class="stat-label">Gêneros</div>
+    </div>
+</div>
+
+
+<h2 class="section-title">
+    <i class="fas fa-rocket"></i> Acesso Rápido à API
+</h2>
+<p style="color: var(--text-secondary); margin-bottom: 2rem;">
+    Navegue pelos endpoints da nossa API e explore todo o conteúdo disponível através da interface do Django REST Framework.
+</p>
+
+<div class="api-grid">
+    <a href="{% url 'movie-list' %}" class="api-card">
+        <div class="api-icon">
+            <i class="fas fa-film"></i>
+        </div>
+        <h3 class="api-card-title">Filmes</h3>
+        <p class="api-card-description">
+            Explore nossa coleção completa de filmes com informações detalhadas sobre elenco, direção e classificações.
+        </p>
+        <span class="api-badge">GET /api/movies/</span>
+    </a>
+    
+    <a href="{% url 'director-list' %}" class="api-card">
+        <div class="api-icon">
+            <i class="fas fa-user-tie"></i>
+        </div>
+        <h3 class="api-card-title">Diretores</h3>
+        <p class="api-card-description">
+            Acesse a lista completa de diretores e descubra suas filmografias e contribuições ao cinema.
+        </p>
+        <span class="api-badge">GET /api/directors/</span>
+    </a>
+    
+    <a href="{% url 'actor-list' %}" class="api-card">
+        <div class="api-icon">
+            <i class="fas fa-users"></i>
+        </div>
+        <h3 class="api-card-title">Atores</h3>
+        <p class="api-card-description">
+            Consulte informações sobre atores e atrizes, incluindo biografias e históricos de performances.
+        </p>
+        <span class="api-badge">GET /api/actors/</span>
+    </a>
+    
+    <a href="{% url 'genre-list' %}" class="api-card">
+        <div class="api-icon">
+            <i class="fas fa-tags"></i>
+        </div>
+        <h3 class="api-card-title">Gêneros</h3>
+        <p class="api-card-description">
+            Navegue por diversos gêneros cinematográficos e descubra filmes organizados por categoria.
+        </p>
+        <span class="api-badge">GET /api/genres/</span>
+    </a>
+</div>
+
+<div class="cta-section">
+    <h2 style="margin-bottom: 1rem;">Pronto para começar?</h2>
+    <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+        Acesse nossa documentação completa e comece a integrar a API Centertainment em seus projetos hoje mesmo.
+    </p>
+    <a href="/api/movies/" class="cta-button">
+        <i class="fas fa-code"></i> Explorar Documentação da API
+    </a>
+</div>
+
+{% endblock content %}

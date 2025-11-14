@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ movie.title }} - Centertainment{% endblock title %}
+
+{% block content %}
+<style>
+    .movie-detail-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .movie-header {
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        border-radius: 20px;
+        padding: 3rem;
+        margin-bottom: 2rem;
+    }
+    
+    .movie-title {
+        font-size: 3rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #8b5cf6, #ec4899);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1rem;
+    }
+    
+    .movie-meta {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+        margin-top: 1.5rem;
+    }
+    
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-secondary);
+    }
+    
+    .meta-item i {
+        color: var(--gradient-start);
+    }
+    
+    .movie-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+    
+    .info-card {
+        background: rgba(20, 24, 33, 0.8);
+        border: 1px solid rgba(139, 92, 246, 0.2);
+        border-radius: 16px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+    }
+    
+    .info-card h3 {
+        color: var(--text-primary);
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid rgba(139, 92, 246, 0.3);
+        padding-bottom: 0.5rem;
+    }
+    
+    .info-list {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .info-list li {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+        color: var(--text-secondary);
+    }
+    
+    .info-list li:last-child {
+        border-bottom: none;
+    }
+    
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background: rgba(139, 92, 246, 0.1);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        border-radius: 25px;
+        color: var(--gradient-start);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        margin-bottom: 2rem;
+    }
+    
+    .back-button:hover {
+        background: rgba(139, 92, 246, 0.2);
+        transform: translateX(-5px);
+        color: var(--gradient-start);
+    }
+    
+    @media (max-width: 768px) {
+        .movie-content {
+            grid-template-columns: 1fr;
+        }
+        
+        .movie-title {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+<div class="movie-detail-container">
+    <a href="{% url 'home' %}" class="back-button">
+        <i class="fas fa-arrow-left"></i> Voltar
+    </a>
+    
+    <div class="movie-header">
+        <h1 class="movie-title">{{ movie.title }}</h1>
+        <div class="movie-meta">
+            <div class="meta-item">
+                <i class="fas fa-calendar"></i>
+                <span>{{ movie.release_year }}</span>
+            </div>
+            <div class="meta-item">
+                <i class="fas fa-star"></i>
+                <span>{{ movie.rating }}/10</span>
+            </div>
+            {% if movie.director %}
+            <div class="meta-item">
+                <i class="fas fa-user-tie"></i>
+                <span>{{ movie.director.name }}</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="movie-content">
+        <div class="info-card">
+            <h3><i class="fas fa-info-circle"></i> Informações</h3>
+            <ul class="info-list">
+                <li><strong>Título:</strong> {{ movie.title }}</li>
+                <li><strong>Ano:</strong> {{ movie.release_year }}</li>
+                <li><strong>Classificação:</strong> {{ movie.rating }}/10</li>
+                {% if movie.director %}
+                <li><strong>Diretor:</strong> {{ movie.director.name }}</li>
+                {% endif %}
+            </ul>
+        </div>
+        
+        <div class="info-card">
+            <h3><i class="fas fa-users"></i> Elenco</h3>
+            <ul class="info-list">
+                {% for actor in movie.actors.all %}
+                <li>{{ actor.name }}</li>
+                {% empty %}
+                <li>Nenhum ator cadastrado</li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <div class="info-card">
+            <h3><i class="fas fa-tags"></i> Gêneros</h3>
+            <ul class="info-list">
+                {% for genre in movie.genres.all %}
+                <li>{{ genre.name }}</li>
+                {% empty %}
+                <li>Nenhum gênero cadastrado</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock content %}

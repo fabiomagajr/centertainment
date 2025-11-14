@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import Movie, Director, Actor, Genre, Country, MovieActor
 from .serializers import MovieActorSerializer, MovieSerializer, DirectorSerializer, ActorSerializer, GenreSerializer, CountrySerializer
 from rest_framework import viewsets, filters
+from django.db.models import Count, Q
 
 class MovieViewSet(viewsets.ModelViewSet):
     queryset = Movie.objects.all()
@@ -44,3 +45,52 @@ class MovieActorViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['movie__title', 'actor__name']
     ordering_fields = ['movie__title', 'actor__name']
+
+def home_view(request):
+    # Obter estatísticas para a homepage
+    context = {
+        'pagina': 'home',
+        'total_movies': Movie.objects.count(),
+        'total_directors': Director.objects.count(),
+        'total_actors': Actor.objects.count(),
+        'total_genres': Genre.objects.count(),
+        # Filmes recentes (últimos 6)
+        'recent_movies': Movie.objects.all().order_by('-id')[:6],
+    }
+    return render(request, 'home.html', context)
+
+def movie_detail_view(request, pk):
+    movie = get_object_or_404(Movie, id=pk)
+    context = {
+        'pagina': 'movie_detail',
+        'movie': movie,
+    }
+    return render(request, 'movie_detail.html', context)
+
+from django.shortcuts import render
+from django.db.models import Q
+from .models import Movie
+
+def search_movie_view(request):
+    query = request.GET.get('q', '')
+    
+    print(f"Query recebida: '{query}'")
+    
+    results = Movie.objects.none()
+    
+    if query:
+        results = Movie.objects.filter(
+            Q(title__icontains=query) |
+            Q(director__name__icontains=query) |
+            Q(movieactor__actor__name__icontains=query) |  # ← CORREÇÃO AQUI
+            Q(genres__name__icontains=query)
+        ).distinct()
+        
+        print(f"Resultados encontrados: {results.count()}")
+    
+    context = {
+        'query': query,
+        'results': results,
+        'pagina': 'search'
+    }
+    return render(request, 'search_results.html', context)

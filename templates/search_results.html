@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if query %}Busca: {{ query }} - Centertainment{% else %}Buscar Filmes - Centertainment{% endif %}
+{% endblock title %}
+
+{% block content %}
+<style>
+    .search-header {
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .search-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #8b5cf6, #ec4899);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+    }
+    
+    .search-query {
+        color: var(--text-secondary);
+        font-size: 1.2rem;
+    }
+    
+    .search-query span {
+        color: var(--gradient-start);
+        font-weight: 600;
+    }
+    
+    .results-count {
+        display: inline-block;
+        padding: 0.5rem 1.5rem;
+        background: rgba(139, 92, 246, 0.1);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        border-radius: 20px;
+        color: var(--text-primary);
+        margin-top: 1rem;
+    }
+    
+    .results-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+    
+    .movie-card {
+        background: rgba(20, 24, 33, 0.8);
+        border: 1px solid rgba(139, 92, 246, 0.2);
+        border-radius: 16px;
+        padding: 2rem;
+        transition: all 0.4s ease;
+        text-decoration: none;
+        color: var(--text-primary);
+        display: block;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .movie-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+    }
+    
+    .movie-card:hover {
+        transform: translateY(-10px);
+        border-color: rgba(139, 92, 246, 0.6);
+        box-shadow: 0 20px 40px rgba(139, 92, 246, 0.3);
+    }
+    
+    .movie-card:hover::before {
+        opacity: 1;
+    }
+    
+    .movie-card-content {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .movie-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .movie-card-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+    }
+    
+    .movie-card-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+    }
+    
+    .movie-card-info-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .movie-card-info-item i {
+        color: var(--gradient-start);
+        width: 20px;
+    }
+    
+    .no-results {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: rgba(20, 24, 33, 0.6);
+        border: 1px solid rgba(139, 92, 246, 0.2);
+        border-radius: 16px;
+    }
+    
+    .no-results-icon {
+        font-size: 5rem;
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+    
+    .no-results-text {
+        color: var(--text-secondary);
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background: rgba(139, 92, 246, 0.1);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        border-radius: 25px;
+        color: var(--gradient-start);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        margin-bottom: 2rem;
+    }
+    
+    .back-button:hover {
+        background: rgba(139, 92, 246, 0.2);
+        transform: translateX(-5px);
+        color: var(--gradient-start);
+    }
+    
+    @media (max-width: 768px) {
+        .results-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .search-title {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+<a href="{% url 'home' %}" class="back-button">
+    <i class="fas fa-arrow-left"></i> Voltar para Home
+</a>
+
+<div class="search-header">
+    <h1 class="search-title">
+        <i class="fas fa-search"></i> Resultados da Busca
+    </h1>
+    {% if query %}
+        <p class="search-query">Você buscou por: <span>"{{ query }}"</span></p>
+        <div class="results-count">
+            <i class="fas fa-film"></i> {{ results.count }} resultado{{ results.count|pluralize }}
+        </div>
+    {% else %}
+        <p class="search-query">Digite algo na barra de busca acima</p>
+    {% endif %}
+</div>
+
+{% if results %}
+    <div class="results-grid">
+        {% for movie in results %}
+            <a href="{% url 'movie-detail' movie.pk %}" class="movie-card">
+                <div class="movie-card-content">
+                    <div class="movie-icon">
+                        <i class="fas fa-film"></i>
+                    </div>
+                    <h3 class="movie-card-title">{{ movie.title }}</h3>
+                    <div class="movie-card-info">
+                        <div class="movie-card-info-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>{{ movie.release_year }}</span>
+                        </div>
+                        <div class="movie-card-info-item">
+                            <i class="fas fa-star"></i>
+                            <span>{{ movie.rating }}/10</span>
+                        </div>
+                        {% if movie.director %}
+                        <div class="movie-card-info-item">
+                            <i class="fas fa-user-tie"></i>
+                            <span>{{ movie.director.name }}</span>
+                        </div>
+                        {% endif %}
+                        {% if movie.genres.all %}
+                        <div class="movie-card-info-item">
+                            <i class="fas fa-tags"></i>
+                            <span>
+                                {% for genre in movie.genres.all|slice:":2" %}
+                                    {{ genre.name }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% elif query %}
+    <div class="no-results">
+        <div class="no-results-icon">
+            <i class="fas fa-film"></i>
+        </div>
+        <p class="no-results-text">
+            Nenhum filme encontrado para "{{ query }}"
+        </p>
+        <a href="{% url 'home' %}" class="back-button">
+            <i class="fas fa-home"></i> Ir para Home
+        </a>
+    </div>
+{% endif %}
+
+{% endblock content %}

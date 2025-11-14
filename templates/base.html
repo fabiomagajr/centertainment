@@ -1,0 +1,816 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --dark-bg: #0a0e17;
+            --card-bg: #141821;
+            --accent-gold: #ffc107;
+            --accent-red: #dc2626;
+            --text-primary: #e4e4e7;
+            --text-secondary: #a1a1aa;
+            --gradient-start: #8b5cf6;
+            --gradient-end: #ec4899;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1f2e 100%);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Animated background effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .navbar {
+            background: rgba(10, 14, 23, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+            padding: 1rem 0;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-brand:hover {
+            transform: scale(1.05);
+            filter: brightness(1.2);
+        }
+        
+        .nav-link {
+            color: var(--text-secondary) !important;
+            font-weight: 500;
+            position: relative;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem !important;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        
+        .nav-link:hover {
+            color: var(--text-primary) !important;
+        }
+        
+        .nav-link:hover::after {
+            width: 80%;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Smooth scroll animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-in {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--dark-bg);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--gradient-end), var(--gradient-start));
+        }
+
+        /* Search Bar Styles - Centralizado */
+        .navbar-collapse {
+            position: relative;
+        }
+
+        .search-form {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 450px;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+        }
+
+        .search-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: rgba(20, 24, 33, 0.8);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 25px;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            width: 100%;
+        }
+
+        .search-wrapper:focus-within {
+            border-color: rgba(139, 92, 246, 0.8);
+            box-shadow: 
+                0 0 0 3px rgba(139, 92, 246, 0.1),
+                0 10px 30px rgba(139, 92, 246, 0.2);
+            background: rgba(20, 24, 33, 0.95);
+        }
+
+        .search-icon {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-right: 0.75rem;
+            transition: color 0.3s ease;
+            pointer-events: none;
+        }
+
+        .search-wrapper:focus-within .search-icon {
+            color: var(--gradient-start);
+        }
+
+        .search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            padding: 0.25rem 0;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        .search-input:focus::placeholder {
+            opacity: 0.5;
+        }
+
+        .search-clear {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.25rem;
+            margin-left: 0.5rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+
+        .search-clear:hover {
+            background: rgba(139, 92, 246, 0.2);
+            color: var(--gradient-start);
+        }
+
+        /* Loading State */
+        .search-wrapper.loading::after {
+            content: '';
+            position: absolute;
+            right: 1rem;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-top-color: var(--gradient-start);
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 991px) {
+            .search-form {
+                position: relative;
+                left: auto;
+                transform: none;
+                max-width: 100%;
+                width: 100%;
+                margin: 1rem 0;
+            }
+            
+            .navbar-nav {
+                margin-top: 0.5rem;
+            }
+        }
+
+        @media (min-width: 992px) and (max-width: 1200px) {
+            .search-form {
+                max-width: 350px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .search-wrapper {
+                padding: 0.4rem 0.8rem;
+            }
+            
+            .search-input {
+                font-size: 0.9rem;
+            }
+            
+            .search-icon {
+                font-size: 0.9rem;
+                margin-right: 0.5rem;
+            }
+        }
+    </style>
+
+    <title>{% block title %}Centertainment - Sua Plataforma de Cinema{% endblock title %}</title>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid">
+            <!-- Logo (Esquerda) -->
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="fas fa-film"></i> Centertainment
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- Search Bar (Centro) -->
+                <form class="search-form" role="search" id="movie-search-form" method="GET" action="{% url 'movie-search' %}">
+                    <div class="search-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input 
+                            class="search-input" 
+                            type="search" 
+                            name="q"
+                            placeholder="Buscar filmes..." 
+                            aria-label="Buscar filmes"
+                            id="movie-search-input"
+                        >
+                        <button class="search-clear" type="button" id="clear-search" style="display: none;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </form>
+
+                
+                <!-- Links (Direita) -->
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/api/movies/">
+                            <i class="fas fa-code"></i> Nossa API
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4" style="padding-top: 80px;">
+        {% block content %}
+        {% endblock content %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="container">
+                <!-- Main Footer Grid -->
+                <div class="footer-grid">
+                    <!-- About Section -->
+                    <div class="footer-column">
+                        <h3 class="footer-heading">
+                            <i class="fas fa-film"></i> Centertainment
+                        </h3>
+                        <p class="footer-description">
+                            Sua plataforma completa de dados cinematográficos. Explore filmes, diretores, atores e gêneros através de nossa API RESTful moderna e confiável.
+                        </p>
+                        <div class="footer-social">
+                            <a href="https://github.com/fabiomagajr/centertainment" class="social-link" aria-label="GitHub">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="https://linkedin.com/in/fabiomagajr" class="social-link" aria-label="LinkedIn">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a href="#" class="social-link" aria-label="Twitter">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="https://instagram.com/fabiomagajr" class="social-link" aria-label="Instagram">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Quick Links -->
+                    <div class="footer-column">
+                        <h4 class="footer-title">Links Rápidos</h4>
+                        <ul class="footer-links">
+                            <li><a href="{% url 'home' %}"><i class="fas fa-angle-right"></i> Home</a></li>
+                            <li><a href="{% url 'movie-list' %}"><i class="fas fa-angle-right"></i> Filmes</a></li>
+                            <li><a href="{% url 'director-list' %}"><i class="fas fa-angle-right"></i> Diretores</a></li>
+                            <li><a href="{% url 'actor-list' %}"><i class="fas fa-angle-right"></i> Atores</a></li>
+                            <li><a href="{% url 'genre-list' %}"><i class="fas fa-angle-right"></i> Gêneros</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- API Resources -->
+                    <div class="footer-column">
+                        <h4 class="footer-title">Recursos da API</h4>
+                        <ul class="footer-links">
+                            <li><a href="/api/"><i class="fas fa-angle-right"></i> Documentação</a></li>
+                            <li><a href="/admin/"><i class="fas fa-angle-right"></i> Admin Panel</a></li>
+                            <li><a href="#"><i class="fas fa-angle-right"></i> Guia de Início</a></li>
+                            <li><a href="#"><i class="fas fa-angle-right"></i> Exemplos de Código</a></li>
+                            <li><a href="#"><i class="fas fa-angle-right"></i> Status da API</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Tech Stack -->
+                    <div class="footer-column">
+                        <h4 class="footer-title">Stack Tecnológica</h4>
+                        <div class="tech-badges">
+                            <span class="tech-badge">
+                                <i class="fab fa-python"></i> Django
+                            </span>
+                            <span class="tech-badge">
+                                <i class="fas fa-server"></i> DRF
+                            </span>
+                            <span class="tech-badge">
+                                <i class="fas fa-database"></i> PostgreSQL
+                            </span>
+                            <span class="tech-badge">
+                                <i class="fab fa-bootstrap"></i> Bootstrap
+                            </span>
+                        </div>
+                        <div class="footer-info">
+                            <p><i class="fas fa-code"></i> Desenvolvido com Django REST Framework</p>
+                            <p><i class="fas fa-shield-alt"></i> API Segura e Escalável</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Bar -->
+                <div class="footer-bottom">
+                    <div class="footer-bottom-content">
+                        <p class="copyright">
+                            &copy; 2025 <strong>Centertainment</strong>. Todos os direitos reservados.
+                        </p>
+                        <div class="footer-legal">
+                            <a href="#">Termos de Uso</a>
+                            <span class="separator">•</span>
+                            <a href="#">Política de Privacidade</a>
+                            <span class="separator">•</span>
+                            <a href="#">Contato</a>
+                        </div>
+                    </div>
+                    <p class="footer-credit">
+                        <i class="fas fa-heart"></i> Feito com Django • Python • REST API
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Animated Background Elements -->
+        <div class="footer-bg-element footer-bg-1"></div>
+        <div class="footer-bg-element footer-bg-2"></div>
+    </footer>
+
+    <style>
+        .site-footer {
+            position: relative;
+            background: linear-gradient(180deg, rgba(10, 14, 23, 0.95) 0%, rgba(6, 8, 15, 1) 100%);
+            margin-top: 5rem;
+            padding-top: 4rem;
+            border-top: 1px solid rgba(139, 92, 246, 0.2);
+            overflow: hidden;
+        }
+
+        .footer-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-column {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .footer-heading {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .footer-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .footer-title {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 50%;
+            color: var(--gradient-start);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social-link:hover {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .footer-links a i {
+            font-size: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--gradient-start);
+            padding-left: 0.5rem;
+        }
+
+        .footer-links a:hover i {
+            transform: translateX(3px);
+        }
+
+        .tech-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tech-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 20px;
+            color: var(--gradient-start);
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .tech-badge:hover {
+            background: rgba(139, 92, 246, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .footer-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .footer-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-info i {
+            color: var(--gradient-start);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(139, 92, 246, 0.2);
+            padding: 2rem 0;
+        }
+
+        .footer-bottom-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .copyright {
+            color: var(--text-secondary);
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .copyright strong {
+            color: var(--text-primary);
+        }
+
+        .footer-legal {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-legal a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-legal a:hover {
+            color: var(--gradient-start);
+        }
+
+        .footer-legal .separator {
+            color: var(--text-secondary);
+        }
+
+        .footer-credit {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        .footer-credit i {
+            color: var(--accent-red);
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+        }
+
+        /* Animated Background Elements */
+        .footer-bg-element {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        .footer-bg-1 {
+            top: 10%;
+            left: 5%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--gradient-start), transparent);
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .footer-bg-2 {
+            bottom: 10%;
+            right: 10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--gradient-end), transparent);
+            animation: float 10s ease-in-out infinite reverse;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .site-footer {
+                padding-top: 3rem;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .footer-bottom-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-legal {
+                justify-content: center;
+            }
+
+            .tech-badges {
+                justify-content: center;
+            }
+
+            .footer-social {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .footer-heading {
+                font-size: 1.3rem;
+            }
+
+            .tech-badge {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.8rem;
+            }
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, observerOptions);
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.card, .hero-section, .list-group-item').forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+    <script>
+    // Search Functionality
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchForm = document.getElementById('movie-search-form');
+        const searchInput = document.getElementById('movie-search-input');
+        const clearButton = document.getElementById('clear-search');
+        const searchWrapper = searchInput.closest('.search-wrapper');
+        
+        // Show/Hide clear button
+        searchInput.addEventListener('input', () => {
+            if (searchInput.value.length > 0) {
+                clearButton.style.display = 'flex';
+            } else {
+                clearButton.style.display = 'none';
+            }
+        });
+        
+        // Clear search
+        clearButton.addEventListener('click', () => {
+            searchInput.value = '';
+            clearButton.style.display = 'none';
+            searchInput.focus();
+        });
+        
+        // Form submit - CORRIGIDO
+        searchForm.addEventListener('submit', (e) => {
+            const query = searchInput.value.trim();
+            
+            if (!query) {
+                e.preventDefault(); // Só previne se estiver vazio
+                alert('Digite algo para buscar');
+                return;
+            }
+            // Se tiver conteúdo, deixa o form submeter normalmente
+            console.log('Enviando busca para:', query);
+        });
+        
+        // Keyboard navigation (ESC para limpar)
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                searchInput.value = '';
+                clearButton.style.display = 'none';
+                searchInput.blur();
+            }
+        });
+    });
+</script>
+
+
+</body>
+</html>
